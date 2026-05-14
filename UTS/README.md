@@ -1,70 +1,118 @@
-# CodeIgniter 4 Application Starter
+# Running Application Tests
 
-## What is CodeIgniter?
+This is the quick-start to CodeIgniter testing. Its intent is to describe what
+it takes to set up your application and get it ready to run unit tests.
+It is not intended to be a full description of the test features that you can
+use to test your application. Those details can be found in the documentation.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Resources
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+* [CodeIgniter 4 User Guide on Testing](https://codeigniter.com/user_guide/testing/index.html)
+* [PHPUnit docs](https://phpunit.de/documentation.html)
+* [Any tutorials on Unit testing in CI4?](https://forum.codeigniter.com/showthread.php?tid=81830)
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Requirements
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+It is recommended to use the latest version of PHPUnit. At the time of this
+writing, we are running version 9.x. Support for this has been built into the
+**composer.json** file that ships with CodeIgniter and can easily be installed
+via [Composer](https://getcomposer.org/) if you don't already have it installed globally.
 
-## Installation & updates
+```console
+> composer install
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+If running under macOS or Linux, you can create a symbolic link to make running tests a touch nicer.
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+```console
+> ln -s ./vendor/bin/phpunit ./phpunit
+```
 
-## Setup
+You also need to install [XDebug](https://xdebug.org/docs/install) in order
+for code coverage to be calculated successfully. After installing `XDebug`, you must add `xdebug.mode=coverage` in the **php.ini** file to enable code coverage.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+## Setting Up
 
-## Important Change with index.php
+A number of the tests use a running database.
+In order to set up the database edit the details for the `tests` group in
+**app/Config/Database.php** or **.env**.
+Make sure that you provide a database engine that is currently running on your machine.
+More details on a test database setup are in the
+[Testing Your Database](https://codeigniter.com/user_guide/testing/database.html) section of the documentation.
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+## Running the tests
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+The entire test suite can be run by simply typing one command-line command from the main directory.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+```console
+> ./phpunit
+```
 
-## Repository Management
+If you are using Windows, use the following command.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+```console
+> vendor\bin\phpunit
+```
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+You can limit tests to those within a single test directory by specifying the
+directory name after phpunit.
 
-## Server Requirements
+```console
+> ./phpunit app/Models
+```
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+## Generating Code Coverage
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+To generate coverage information, including HTML reports you can view in your browser,
+you can use the following command:
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+```console
+> ./phpunit --colors --coverage-text=tests/coverage.txt --coverage-html=tests/coverage/ -d memory_limit=1024m
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+This runs all of the tests again collecting information about how many lines,
+functions, and files are tested. It also reports the percentage of the code that is covered by tests.
+It is collected in two formats: a simple text file that provides an overview as well
+as a comprehensive collection of HTML files that show the status of every line of code in the project.
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library 
-https://youtube.com/shorts/yRPpGIrtYC8?si=HYpSJWAJsqPoFJaK
+The text file can be found at **tests/coverage.txt**.
+The HTML files can be viewed by opening **tests/coverage/index.html** in your favorite browser.
+
+## PHPUnit XML Configuration
+
+The repository has a ``phpunit.xml.dist`` file in the project root that's used for
+PHPUnit configuration. This is used to provide a default configuration if you
+do not have your own configuration file in the project root.
+
+The normal practice would be to copy ``phpunit.xml.dist`` to ``phpunit.xml``
+(which is git ignored), and to tailor it as you see fit.
+For instance, you might wish to exclude database tests, or automatically generate
+HTML code coverage reports.
+
+## Test Cases
+
+Every test needs a *test case*, or class that your tests extend. CodeIgniter 4
+provides one class that you may use directly:
+* `CodeIgniter\Test\CIUnitTestCase`
+
+Most of the time you will want to write your own test cases that extend `CIUnitTestCase`
+to hold functions and services common to your test suites.
+
+## Creating Tests
+
+All tests go in the **tests/** directory. Each test file is a class that extends a
+**Test Case** (see above) and contains methods for the individual tests. These method
+names must start with the word "test" and should have descriptive names for precisely what
+they are testing:
+`testUserCanModifyFile()` `testOutputColorMatchesInput()` `testIsLoggedInFailsWithInvalidUser()`
+
+Writing tests is an art, and there are many resources available to help learn how.
+Review the links above and always pay attention to your code coverage.
+
+### Database Tests
+
+Tests can include migrating, seeding, and testing against a mock or live database.
+Be sure to modify the test case (or create your own) to point to your seed and migrations
+and include any additional steps to be run before tests in the `setUp()` method.
+See [Testing Your Database](https://codeigniter.com/user_guide/testing/database.html)
+for details.

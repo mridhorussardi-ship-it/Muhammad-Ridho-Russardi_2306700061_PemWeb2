@@ -1,0 +1,87 @@
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    background: #0f172a;
+    color: white;
+}
+
+.navbar-custom{
+    background: rgba(15,23,42,0.95);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.hero{
+    padding: 90px 0;
+    background:
+    linear-gradient(to right,
+    rgba(15,23,42,0.95),
+    rgba(15,23,42,0.7)),
+    url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1600&auto=format&fit=crop');
+
+    background-size: cover;
+    background-position: center;
+}
+
+.hero h1{
+    font-size: 60px;
+    font-weight: 700;
+}
+
+.game-card{
+    background: #1e293b;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.game-card:hover{
+    transform: translateY(-8px);
+}
+
+.game-card img{
+    height: 220px;
+    object-fit: cover;
+}
+
+.game-title{
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.game-info{
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.btn-library{
+    background: #2563eb;
+    border: none;
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-library:hover{
+    background: black;
+    color: white;
+}
+
+.search-box,
+.genre-filter{
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+
+.footer{
+    margin-top: 80px;
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
